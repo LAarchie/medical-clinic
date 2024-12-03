@@ -7,7 +7,7 @@ import java.util.*;
 public class PatientManager {
     private final Map<String, Patient> patientsByPesel = new HashMap<>();
     private final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
-    private final Scanner sc = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public void addPatient(Patient patient) {
         patientsByPesel.put(patient.getPesel(), patient); //Add to patientsByPesel
@@ -28,15 +28,21 @@ public class PatientManager {
 
     public void findPatientByPesel() {
         System.out.println("Enter PESEL number: ");
-        String pesel = sc.nextLine();
-        Patient patient = patientsByPesel.get(pesel);
-        System.out.println(patient.toString());
+        String pesel = scanner.nextLine();
+
+        //Check if pesel exists in the map
+        if (patientsByPesel.containsKey(pesel)) {
+            Patient patient = patientsByPesel.get(pesel);
+            System.out.println(patient.toString());
+        } else {
+            System.out.println("Invalid PESEL number");
+        }
 
     }
 
     public void findPatientsBySurname() {
         System.out.println("Enter surname: ");
-        String surname = sc.nextLine();
+        String surname = scanner.nextLine();
 
         //List of patients with the provided surname, if it doesn't match - gives an empty List to avoid an Error
         List<Patient> patientsWithSameSurname = patientsBySurname.getOrDefault(surname, new ArrayList<>());
@@ -56,23 +62,23 @@ public class PatientManager {
 
     public void interactiveAddPatient() {
         System.out.print("Enter patient's name: ");
-        String name = sc.nextLine();
+        String name = scanner.nextLine();
 
         System.out.print("Enter patient's surname: ");
-        String surname = sc.nextLine();
+        String surname = scanner.nextLine();
 
         System.out.print("Enter patient's PESEL: ");
-        String pesel = sc.nextLine();
+        String pesel = scanner.nextLine();
 
-        System.out.print("Enter patient's date of birth (YYYY-MM-DD_: ");
-        String birthDateStr = sc.nextLine();
+        System.out.print("Enter patient's date of birth (YYYY-MM-DD): ");
+        String birthDateStr = scanner.nextLine();
         LocalDate dateOfBirth = LocalDate.parse(birthDateStr);
 
         System.out.print("Enter patient's phone number: ");
-        String phoneNumber = sc.nextLine();
+        String phoneNumber = scanner.nextLine();
 
         System.out.print("Enter patient's email: ");
-        String email = sc.nextLine();
+        String email = scanner.nextLine();
 
         Patient patient = new Patient(name, surname, pesel, dateOfBirth, phoneNumber, email);
         addPatient(patient);
