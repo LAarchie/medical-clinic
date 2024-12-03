@@ -1,0 +1,98 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class MedicalSystemTest {
+
+    private MedicalSystem system;
+
+    @BeforeEach
+    void setUp() {
+        system = new MedicalSystem();
+
+        // Dodanie lekarzy
+        Doctor d1 = new Doctor("Alice", "Brown", "56789012345", LocalDate.of(1980, 3, 20), 43, "456789123", "alice.brown@example.com", "DOC001");
+        d1.addSpecialization("Cardiology");
+
+        Doctor d2 = new Doctor("Bob", "Green", "89012345678", LocalDate.of(1975, 7, 10), 49, "123987456", "bob.green@example.com", "DOC002");
+        d2.addSpecialization("Orthopedics");
+
+        Doctor d3 = new Doctor("Clara", "White", "34567890123", LocalDate.of(1988, 5, 22), 36, "789654123", "clara.white@example.com", "DOC003");
+        d3.addSpecialization("Pediatrics");
+
+        Doctor d4 = new Doctor("David", "Black", "56789012345", LocalDate.of(1990, 12, 1), 34, "321654987", "david.black@example.com", "DOC004");
+        d4.addSpecialization("Dermatology");
+
+        system.addDoctor(d1);
+        system.addDoctor(d2);
+        system.addDoctor(d3);
+        system.addDoctor(d4);
+
+        // Dodanie grafików
+        system.addSchedule(new Schedule("DOC001", LocalDate.now(), "09:00-17:00")); // Dziś
+        system.addSchedule(new Schedule("DOC001", LocalDate.now().plusDays(3), "10:00-16:00")); // Za 3 dni
+
+        system.addSchedule(new Schedule("DOC002", LocalDate.now().plusDays(1), "08:00-14:00")); // Jutro
+        system.addSchedule(new Schedule("DOC002", LocalDate.now().plusDays(5), "12:00-18:00")); // Za 5 dni
+
+        system.addSchedule(new Schedule("DOC003", LocalDate.now().plusDays(2), "09:00-13:00")); // Za 2 dni
+        system.addSchedule(new Schedule("DOC003", LocalDate.now().plusDays(6), "14:00-20:00")); // Za 6 dni
+
+        system.addSchedule(new Schedule("DOC004", LocalDate.now().plusDays(2), "11:00-15:00")); // Za 2 dni
+        system.addSchedule(new Schedule("DOC004", LocalDate.now().plusDays(7), "09:00-17:00")); // Za tydzień
+    }
+
+    @Test
+    void testAddAndRetrieveSchedulesForFourDoctors() {
+        // Weryfikacja liczby grafików dla każdego lekarza
+        assertEquals(2, system.getSchedulesForDoctor("DOC001").size(), "DOC001 powinien mieć 2 grafiki");
+        assertEquals(2, system.getSchedulesForDoctor("DOC002").size(), "DOC002 powinien mieć 2 grafiki");
+        assertEquals(2, system.getSchedulesForDoctor("DOC003").size(), "DOC003 powinien mieć 2 grafiki");
+        assertEquals(2, system.getSchedulesForDoctor("DOC004").size(), "DOC004 powinien mieć 2 grafiki");
+    }
+
+    @Test
+    void testGetSchedulesForDoctorNextWeekForFourDoctors() {
+        // Weryfikacja grafików na najbliższy tydzień dla każdego lekarza
+        assertEquals(2, system.getSchedulesForDoctorNextWeek("DOC001").size(), "DOC001 powinien mieć 2 grafiki w najbliższym tygodniu");
+        assertEquals(2, system.getSchedulesForDoctorNextWeek("DOC002").size(), "DOC002 powinien mieć 2 grafiki w najbliższym tygodniu");
+        assertEquals(2, system.getSchedulesForDoctorNextWeek("DOC003").size(), "DOC003 powinien mieć 2 grafiki w najbliższym tygodniu");
+        assertEquals(1, system.getSchedulesForDoctorNextWeek("DOC004").size(), "DOC004 powinien mieć 1 grafik w najbliższym tygodniu (2 dni w tygodniu + 7 dni limit)");
+    }
+
+    @Test
+    void testSchedulesForNonExistentDoctor() {
+        // Pobranie grafików dla nieistniejącego lekarza
+        List<Schedule> schedules = system.getSchedulesForDoctor("DOC999");
+
+        assertTrue(schedules.isEmpty(), "Nie powinno być grafików dla nieistniejącego lekarza");
+    }
+
+    @Test
+    void testAddSchedulesForDoctorBeyondNextWeek() {
+        // Dodanie grafików poza najbliższym tygodniem dla DOC001
+        system.addSchedule(new Schedule("DOC001", LocalDate.now().plusDays(10), "10:00-18:00"));
+
+        // Weryfikacja grafików na najbliższy tydzień
+        List<Schedule> nextWeekSchedules = system.getSchedulesForDoctorNextWeek("DOC001");
+        assertEquals(2, nextWeekSchedules.size(), "DOC001 powinien mieć tylko 2 grafiki w najbliższym tygodniu");
+    }
+
+    @Test
+    void testCorrectWorkingHours() {
+        // Weryfikacja godzin pracy dla grafików lekarzy
+        List<Schedule> doc1Schedules = system.getSchedulesForDoctor("DOC001");
+        assertEquals("09:00-17:00", doc1Schedules.get(0).getWorkingHours(), "Godziny pracy dla DOC001 są niezgodne");
+        assertEquals("10:00-16:00", doc1Schedules.get(1).getWorkingHours(), "Godziny pracy dla DOC001 są niezgodne");
+
+        List<Schedule> doc2Schedules = system.getSchedulesForDoctor("DOC002");
+        assertEquals("08:00-14:00", doc2Schedules.get(0).getWorkingHours(), "Godziny pracy dla DOC002 są niezgodne");
+        assertEquals("12:00-18:00", doc2Schedules.get(1).getWorkingHours(), "Godziny pracy dla DOC002 są niezgodne");
+    }
+}
+
+
+        // mvn test w InteliJ
