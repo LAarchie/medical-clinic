@@ -10,7 +10,7 @@ public class Reception {
     public static void main(String[] args) {
         while (true) {
             // Menu options
-            System.out.println("-----Patient Manager-----");
+            System.out.println("-----Reception Management Interface-----");
             System.out.println("1. Add Patient");
             System.out.println("2. Search for a patient by PESEL");
             System.out.println("3. Search for patients by surname");

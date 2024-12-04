@@ -85,6 +85,9 @@ public class DoctorManager {
         }
         return doctors;
     }
+    public void addSpecialty(String specialty) {
+
+    }
 
     public void interactiveAddDoctor() {
         System.out.print("Enter doctor's name: ");
