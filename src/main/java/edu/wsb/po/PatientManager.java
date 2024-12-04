@@ -4,7 +4,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
-
 public class PatientManager {
     private final Map<String, Patient> patientsByPesel = new HashMap<>();
     private final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
@@ -130,7 +129,6 @@ public class PatientManager {
 
         Patient patient = new Patient(name, surname, pesel, dateOfBirth, phoneNumber, email);
         addPatient(patient);
-        System.out.println("Patient added successfully");
     }
 
 }
