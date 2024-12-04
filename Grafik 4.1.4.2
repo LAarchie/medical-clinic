@@ -1,0 +1,103 @@
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+// Klasa reprezentująca grafik lekarza
+class GrafikLekarza {
+    private String idLekarza;
+    private LocalDate data;
+    private String godzinaRozpoczecia;
+    private String godzinaZakonczenia;
+
+    public GrafikLekarza(String idLekarza, LocalDate data, String godzinaRozpoczecia, String godzinaZakonczenia) {
+        this.idLekarza = idLekarza;
+        this.data = data;
+        this.godzinaRozpoczecia = godzinaRozpoczecia;
+        this.godzinaZakonczenia = godzinaZakonczenia;
+    }
+
+    public String getIdLekarza() {
+        return idLekarza;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return "GrafikLekarza{" +
+                "idLekarza='" + idLekarza + '\'' +
+                ", data=" + data +
+                ", godzinaRozpoczecia='" + godzinaRozpoczecia + '\'' +
+                ", godzinaZakonczenia='" + godzinaZakonczenia + '\'' +
+                '}';
+    }
+}
+
+// Repozytorium zarządzające grafikami
+class GrafikRepository {
+    private List<GrafikLekarza> grafiki = new ArrayList<>();
+
+    public void dodajGrafik(GrafikLekarza grafik) {
+        grafiki.add(grafik);
+    }
+
+    public List<GrafikLekarza> znajdzGrafikiLekarzaNaTydzien(String idLekarza, LocalDate startTygodnia) {
+        LocalDate koniecTygodnia = startTygodnia.plusDays(6);
+        return grafiki.stream()
+                .filter(g -> g.getIdLekarza().equals(idLekarza) &&
+                        !g.getData().isBefore(startTygodnia) &&
+                        !g.getData().isAfter(koniecTygodnia))
+                .collect(Collectors.toList());
+    }
+
+    public List<GrafikLekarza> getWszystkieGrafiki() {
+        return grafiki;
+    }
+}
+
+// Serwis obsługujący logikę biznesową
+class GrafikService {
+    private GrafikRepository repository;
+
+    public GrafikService(GrafikRepository repository) {
+        this.repository = repository;
+    }
+
+    public void dodajGrafik(String idLekarza, LocalDate data, String godzinaRozpoczecia, String godzinaZakonczenia) {
+        GrafikLekarza grafik = new GrafikLekarza(idLekarza, data, godzinaRozpoczecia, godzinaZakonczenia);
+        repository.dodajGrafik(grafik);
+    }
+
+    public List<GrafikLekarza> pobierzGrafikiLekarzaNaTydzien(String idLekarza, LocalDate startTygodnia) {
+        return repository.znajdzGrafikiLekarzaNaTydzien(idLekarza, startTygodnia);
+    }
+}
+
+// Klasa demonstracyjna
+public class GrafikLekarzyDemo {
+    public static void main(String[] args) {
+        GrafikRepository repository = new GrafikRepository();
+        GrafikService service = new GrafikService(repository);
+
+        // Dodawanie grafików lekarzy
+        service.dodajGrafik("L001", LocalDate.of(2024, 12, 4), "08:00", "16:00");
+        service.dodajGrafik("L001", LocalDate.of(2024, 12, 5), "10:00", "18:00");
+        service.dodajGrafik("L002", LocalDate.of(2024, 12, 6), "09:00", "15:00");
+        service.dodajGrafik("L003", LocalDate.of(2024, 12, 7), "12:00", "20:00");
+        service.dodajGrafik("L004", LocalDate.of(2024, 12, 8), "07:00", "14:00");
+
+        // Pobranie grafików kardiologa na tydzień
+        System.out.println("Grafiki kardiologa (L001) na tydzień:");
+        List<GrafikLekarza> grafikiL001 = service.pobierzGrafikiLekarzaNaTydzien("L001", LocalDate.of(2024, 12, 3));
+        grafikiL001.forEach(System.out::println);
+
+        // Pobranie grafików ortopedy na tydzień
+        System.out.println("\nGrafiki ortopedy (L002) na tydzień:");
+        List<GrafikLekarza> grafikiL002 = service.pobierzGrafikiLekarzaNaTydzien("L002", LocalDate.of(2024, 12, 3));
+        grafikiL002.forEach(System.out::println);
+    }
+}
+
