@@ -81,7 +81,7 @@ public class DoctorManager {
         }
         List<Doctor> doctors = doctorsBySpecialty.get(specialty);
         if (doctors.isEmpty()) {
-            System.out.println("No doctors found for specialty " + specialty);
+            System.out.println("No doctors found with specialty: " + specialty);
         }
         return doctors;
     }

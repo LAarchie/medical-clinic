@@ -1,5 +1,6 @@
 package edu.wsb.po;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -8,22 +9,69 @@ public class PatientManager {
     private final Map<String, Patient> patientsByPesel = new HashMap<>();
     private final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
     private final Scanner scanner = new Scanner(System.in);
+    private final String patientFilePath = getClass().getClassLoader().getResource("patients.csv").getFile();
 
+    public PatientManager() {
+        loadPatientFromFile();
+    }
+    private void loadPatientFromFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(patientFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (tokens.length != 6) continue;
+                String name = tokens[0];
+                String surname = tokens[1];
+                String pesel = tokens[2];
+                LocalDate dateOfBirth = LocalDate.parse(tokens[3]);
+                String phoneNumber = tokens[4];
+                String email = tokens[5];
+
+                Patient patient = new Patient(name, surname, pesel, dateOfBirth, phoneNumber, email);
+                addPatientToMaps(patient);
+            }
+        } catch (IOException e){
+            System.out.println("Error loading patient from file" + e.getMessage());
+        }
+    }
+    public void savePatientToFile(Patient patient) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(patientFilePath, true))){
+            String line = String.join(",",
+                    patient.getName(),
+                    patient.getSurname(),
+                    patient.getPesel(),
+                    patient.getDateOfBirth().toString(),
+                    patient.getPhoneNumber(),
+                    patient.getEmail());
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e){
+            System.out.println("Error saving patient to file" + e.getMessage());
+        }
+    }
+
+    private void addPatientToMaps(Patient patient){
+        patientsByPesel.put(patient.getPesel(), patient);
+        String surname = patient.getSurname();
+        List<Patient> patientsWithSameSurname = patientsBySurname.get(surname);
+
+        if (patientsWithSameSurname == null) {
+            patientsWithSameSurname = new ArrayList<>();
+            patientsBySurname.put(surname, patientsWithSameSurname);
+        }
+        patientsWithSameSurname.add(patient);
+    }
     public void addPatient(Patient patient) {
-        patientsByPesel.put(patient.getPesel(), patient); //Add to patientsByPesel
-        //System.out.println("PatByPes: " + patientsByPesel);
-
-
-        //Check if the surname already exists in patientsBySurname map
-        if (!patientsBySurname.containsKey(patient.getSurname())) {
-
-            //create a new list for this surname if it doesn't exist
-            patientsBySurname.put(patient.getSurname(), new ArrayList<>());
+        // Checks if patient with this pesel already exists
+        if (patientsByPesel.containsKey(patient.getPesel())) {
+            System.out.println("Patient with Pesel: " + patient.getPesel() + " already exists");
+            return;
         }
 
-        List<Patient> patientsWithSameSurname = patientsBySurname.get(patient.getSurname());
-        patientsWithSameSurname.add(patient);
-        //.out.println("patBySurname: " + patientsBySurname);
+        // If it's a new patient - adds it to the pesel and sameSurname maps and saves the data to the csv file
+        addPatientToMaps(patient);
+        savePatientToFile(patient);
+        System.out.println("Patient added successfully");
     }
 
     public void findPatientByPesel() {
@@ -53,7 +101,7 @@ public class PatientManager {
         else {
             System.out.println("Patients with surname '" + surname + "':");
 
-            //Iterate over the Patients list and print the info
+            //Iterate over the Patients list and print the info of each patient
             for (Patient patient : patientsWithSameSurname) {
                 System.out.println(patient);
             }
