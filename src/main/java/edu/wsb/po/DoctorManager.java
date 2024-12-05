@@ -39,7 +39,7 @@ public class DoctorManager {
         if (doctorsById.containsKey(id)) {
             return doctorsById.get(id);
         } else{
-            System.out.println("Doctor not found");
+            System.out.println("Doctor with ID: "+ id +" not found");
             return null;
         }
 
@@ -47,33 +47,12 @@ public class DoctorManager {
 
     public List<Doctor> findDoctorsBySpecialty() {
         String specialty = "";
-        System.out.println("Choose a specialty: ");
-        System.out.println("1. Cardiologist");
-        System.out.println("2. Dermatologist");
-        System.out.println("3. Optometrist");
-        System.out.println("4. Urologist");
-        System.out.println("5. Oncologist");
+        for ( String spec : predefinedSpecialties) {
+            System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
+        }
         int choice = scanner.nextInt();
         scanner.nextLine();
-        switch (choice) {
-            case 1:
-                specialty = "Cardiologist";
-                break;
-                case 2:
-                    specialty = "Dermatologist";
-                    break;
-                    case 3:
-                        specialty = "Optometrist";
-                        break;
-                        case 4:
-                            specialty = "Urologist";
-                            break;
-                            case 5:
-                                specialty = "Oncologist";
-                                break;
-                                default:
-                                    System.out.println("Invalid choice, try again");
-        }
+        specialty = predefinedSpecialties.get(choice-1);
 
         if(!predefinedSpecialties.contains(specialty)) {
             System.out.println("Specialty " + specialty + " is not recognized");
@@ -85,9 +64,7 @@ public class DoctorManager {
         }
         return doctors;
     }
-    public void addSpecialty(String specialty) {
 
-    }
 
     public void interactiveAddDoctor() {
         System.out.print("Enter doctor's name: ");
@@ -109,9 +86,59 @@ public class DoctorManager {
         System.out.println("Enter doctor's email: ");
         String email = scanner.nextLine();
 
+        Set<String> selectedSpecialties = new HashSet<>();
+
+        System.out.println("Choose specialties to assign - separated by comma: ");
+        for ( String spec : predefinedSpecialties) {
+            System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
+        }
+        String input = scanner.nextLine();
+
 
     }
 
 
 
+
+
+
+    public void interactiveAddSpecialty() {
+        DoctorManager doctorManager = new DoctorManager();
+
+        Doctor doctor = doctorManager.findDoctorById();
+
+        System.out.println("Choose a specialty: ");
+        //System.out.println("1. Cardiologist");
+        //System.out.println("2. Dermatologist");
+        //System.out.println("3. Optometrist");
+        //System.out.println("4. Urologist");
+        //System.out.println("5. Oncologist");
+        for ( String spec : predefinedSpecialties) {
+            System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
+        }
+        int choice = -1;
+
+        while (true){
+            System.out.println("Enter specialty number: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice >= 1 && choice <= doctor.getSpecialties().size()) {
+                break;
+            } else {
+                System.out.println("Invalid choice, please try again");
+            }
+        }
+
+        String selectedSpecialty = predefinedSpecialties.get(choice-1);
+
+        if (doctor.getSpecialties().contains(selectedSpecialty)) {
+            System.out.println("This doctor already has this specialty");
+            return;
+        }
+        doctor.addSpecialty(selectedSpecialty);
+        System.out.println("Specialty "+ selectedSpecialty +" added successfully " + "to doctor with ID: "+
+                doctor.getId());
+
+    }
 }
