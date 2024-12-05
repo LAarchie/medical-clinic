@@ -19,6 +19,7 @@ public class Reception {
             System.out.println("6. Exit");
             System.out.println("Choose an option: ");
 
+            //Doctor doc1 = doctorManager.addDoctor();
             int choice = scanner.nextInt(); //Read users choice
             scanner.nextLine();
 
