@@ -46,13 +46,13 @@ public class DoctorManager {
     }
 
     public List<Doctor> findDoctorsBySpecialty() {
-        String specialty = "";
+
         for ( String spec : predefinedSpecialties) {
             System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
         }
         int choice = scanner.nextInt();
         scanner.nextLine();
-        specialty = predefinedSpecialties.get(choice-1);
+        String specialty = predefinedSpecialties.get(choice-1);
 
         if(!predefinedSpecialties.contains(specialty)) {
             System.out.println("Specialty " + specialty + " is not recognized");
