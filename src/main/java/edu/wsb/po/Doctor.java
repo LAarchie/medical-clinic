@@ -10,11 +10,10 @@ public class Doctor extends Person {
     private Set<String> specialties;
 
     public Doctor(String name, String surname, String pesel,
-                  LocalDate dateOfBirth, String phoneNumber, String email, String id) {
+                  LocalDate dateOfBirth, String phoneNumber, String email, String id, Set<String> specialties) {
         super(name, surname, pesel, dateOfBirth, phoneNumber, email);
         this.id = id;
         this.specialties = new HashSet<>();
-
     }
 
     public String getId(){
@@ -25,9 +24,10 @@ public class Doctor extends Person {
         return specialties;
     }
 
-    public void addSpecialties(String specialty){
+    public void addSpecialty(String specialty){
         specialties.add(specialty);
-    }
+        }
+
 
     @Override
     public String toString() {

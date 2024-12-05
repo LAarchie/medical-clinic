@@ -23,13 +23,14 @@ public class HumanResources {
                     doctorManager.interactiveAddDoctor();
                     break;
                     case 2:
+                        doctorManager.interactiveAddSpecialty();
                         break;
                         case 3:
                             System.out.println("Exiting...");
                             return;
                             default:
-                                System.out.println("Invalid choice, try again." +
-                                        "");
+                                System.out.println("Invalid choice, try again.");
+
             }
 
         }
