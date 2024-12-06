@@ -67,6 +67,27 @@ public class DoctorManager {
         }
     }
 
+    private void saveAllDoctorsToFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(doctorFilePath))){
+            for (Doctor doctor : doctorsById.values()) {
+                String specialties = String.join(";", doctor.getSpecialties());
+                String line = String.join(",",
+                        doctor.getName(),
+                        doctor.getSurname(),
+                        doctor.getPesel(),
+                        doctor.getDateOfBirth().toString(),
+                        doctor.getPhoneNumber(),
+                        doctor.getEmail(),
+                        doctor.getId(),
+                        specialties);
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e){
+            System.out.println("Error saving doctors to file" + e.getMessage());
+        }
+    }
+
     public void addDoctorToMaps(Doctor doctor){
         doctorsById.put(doctor.getId(), doctor);
 
@@ -229,6 +250,6 @@ public class DoctorManager {
             doctor.addSpecialty(selectedSpecialty);
             System.out.println("Specialty "+ selectedSpecialty +" added successfully " + "to doctor with ID: "+
                     doctor.getId());}
-            System.out.println(doctor.getSpecialties());
+            saveAllDoctorsToFile(); //re-write the whole file of Doctors after adding a specialty
     }
 }
