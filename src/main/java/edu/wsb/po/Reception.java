@@ -34,7 +34,8 @@ public class Reception {
                             patientManager.findPatientsBySurname();
                             break;
                             case 4:
-                                doctorManager.findDoctorById();
+                                Doctor doctor = doctorManager.findDoctorById();
+                                System.out.println(doctor);
                                 break;
                                 case 5:
                                     doctorManager.findDoctorsBySpecialty();
