@@ -6,7 +6,7 @@ public class HumanResources {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DoctorManager doctorManager = new DoctorManager();
 
-    public static void main(String[] args) {
+    public void start() {
         while (true) {
             // Menu options
             System.out.println("-----Doctor Manager-----");

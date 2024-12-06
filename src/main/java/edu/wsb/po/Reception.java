@@ -7,7 +7,7 @@ public class Reception {
     private static final PatientManager patientManager = new PatientManager();
     private static final DoctorManager doctorManager = new DoctorManager();
 
-    public static void main(String[] args) {
+    public void start(){
         while (true) {
             // Menu options
             System.out.println("-----Reception Management Interface-----");
