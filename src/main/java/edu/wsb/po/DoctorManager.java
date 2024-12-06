@@ -1,5 +1,6 @@
 package edu.wsb.po;
 
+import java.io.*;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.*;
@@ -7,8 +8,9 @@ import java.util.*;
 public class DoctorManager {
     private final Map<String, Doctor> doctorsById = new HashMap<>();
     private final Map<String, List<Doctor>> doctorsBySpecialty = new HashMap<>();
-    private final List<String> predefinedSpecialties = Arrays.asList("Cardiologist", "Dermatologist", "Optometrist",
-            "Urologist", "Oncologist");
+    private final List<String> predefinedSpecialties = Arrays.asList("CARDIOLOGIST", "DERMATOLOGIST", "OPTOMETRIST",
+            "UROLOGIST", "ONCOLOGIST");
+    private final String doctorFilePath = getClass().getClassLoader().getResource("doctors.csv").getFile();
     private final Scanner scanner = new Scanner(System.in);
 
     public DoctorManager() {
@@ -16,19 +18,79 @@ public class DoctorManager {
         for (String specialty : predefinedSpecialties) {
             doctorsBySpecialty.put(specialty, new ArrayList<>());
         }
+        loadDoctorFromFile();
+    }
+
+    private void loadDoctorFromFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(doctorFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (tokens.length != 8) continue;
+                String name = tokens[0];
+                String surname = tokens[1];
+                String pesel = tokens[2];
+                LocalDate dateOfBirth = LocalDate.parse(tokens[3]);
+                String phoneNumber = tokens[4];
+                String email = tokens[5];
+                String id = tokens[6];
+                List<String> specialtiesArr = Arrays.asList(tokens[7].split(";"));
+                Set<String> specialties = new HashSet<>(specialtiesArr);
+                Doctor doctor = new Doctor(name, surname, pesel, dateOfBirth,
+                        phoneNumber, email, id, specialties);
+                addDoctorToMaps(doctor);
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error loading doctor from file" + e.getMessage());
+        }
+    }
+
+    private void saveDoctorToFile(Doctor doctor) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(doctorFilePath, true))){
+            String specialties = String.join(";", doctor.getSpecialties());
+            System.out.println("doc specs: " + doctor.getSpecialties());
+            System.out.println("saving specialties: " + specialties); //debug
+            String line = String.join(",",
+                    doctor.getName(),
+                    doctor.getSurname(),
+                    doctor.getPesel(),
+                    doctor.getDateOfBirth().toString(),
+                    doctor.getPhoneNumber(),
+                    doctor.getEmail(),
+                    doctor.getId(),
+                    specialties);
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e){
+            System.out.println("Error saving doctor to file" + e.getMessage());
+        }
+    }
+
+    public void addDoctorToMaps(Doctor doctor){
+        doctorsById.put(doctor.getId(), doctor);
+
+        Set<String> specialties = doctor.getSpecialties();
+        for (String specialty : specialties) {
+            specialty = specialty.toUpperCase();
+            if(!doctorsBySpecialty.containsKey(specialty)){
+                doctorsBySpecialty.put(specialty, new ArrayList<>());
+            }
+            doctorsBySpecialty.get(specialty).add(doctor);
+        }
+
     }
 
 
     public void addDoctor(Doctor doctor) {
-        doctorsById.put(doctor.getId(), doctor);
 
         for (String specialty : doctor.getSpecialties()) {
             if(!predefinedSpecialties.contains(specialty)) {
                 System.out.println("Warning! The specialty: " + specialty + " is not recognized");
-                continue;
             }
-            doctorsBySpecialty.get(specialty).add(doctor);
         }
+        addDoctorToMaps(doctor);
+        saveDoctorToFile(doctor);
         System.out.println("Doctor added successfully");
     }
 
@@ -42,28 +104,42 @@ public class DoctorManager {
             System.out.println("Doctor with ID: "+ id +" not found");
             return null;
         }
-
     }
 
     public List<Doctor> findDoctorsBySpecialty() {
-
-        for ( String spec : predefinedSpecialties) {
-            System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
+        //Display the specialties to the interface
+        for (int i=0; i < predefinedSpecialties.size(); i++) {
+            System.out.println((i+1) + ". " + predefinedSpecialties.get(i));
         }
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        String specialty = predefinedSpecialties.get(choice-1);
+        int choice = -1;
+        while(choice < 1 || choice > predefinedSpecialties.size()) {
+            System.out.println("Enter the number that corresponds to the specialty: ");
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice < 1 || choice > predefinedSpecialties.size()) {
+                    System.out.println("Invalid choice, try again");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input, please enter a number: ");
+                scanner.nextLine();
+            }
+        }
+        String specialty = predefinedSpecialties.get(choice - 1);
 
-        if(!predefinedSpecialties.contains(specialty)) {
-            System.out.println("Specialty " + specialty + " is not recognized");
+        List<Doctor> doctors = doctorsBySpecialty.get(specialty);
+        if(doctors == null || doctors.isEmpty()) {
+            System.out.println("No doctors found with specialty: " + specialty);
             return Collections.emptyList();
         }
-        List<Doctor> doctors = doctorsBySpecialty.get(specialty);
-        if (doctors.isEmpty()) {
-            System.out.println("No doctors found with specialty: " + specialty);
+        for (Doctor doctor : doctors) {
+            System.out.println(doctor.toString());
         }
         return doctors;
     }
+
+
+
 
 
     public void interactiveAddDoctor() {
@@ -76,7 +152,7 @@ public class DoctorManager {
         System.out.print("Enter doctor's PESEL: ");
         String pesel = scanner.nextLine();
 
-        System.out.print("Enter doctor's date of birth (YYYY-MM-DD: ");
+        System.out.print("Enter doctor's date of birth (YYYY-MM-DD): ");
         String birthDateStr = scanner.nextLine();
         LocalDate dateOfBirth = LocalDate.parse(birthDateStr);
 
@@ -86,6 +162,9 @@ public class DoctorManager {
         System.out.println("Enter doctor's email: ");
         String email = scanner.nextLine();
 
+        System.out.println("Enter doctor's ID: ");
+        String id = scanner.nextLine();
+
         Set<String> selectedSpecialties = new HashSet<>();
 
         System.out.println("Choose specialties to assign - separated by comma: ");
@@ -93,52 +172,63 @@ public class DoctorManager {
             System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
         }
         String input = scanner.nextLine();
+        String[] inputs = input.split(",");
+        for (String choice : inputs) {
+            try{
+                int specialtyIndex = Integer.parseInt(choice.trim()) - 1;
 
+                if (specialtyIndex >= 0 && specialtyIndex < predefinedSpecialties.size()) {
+                    selectedSpecialties.add(predefinedSpecialties.get(specialtyIndex).trim().toUpperCase());
+                } else {
+                    System.out.println("Invalid choice: " + choice.trim());
+                }}
+            catch (NumberFormatException e) {
+                System.out.println("Invalid input: " + choice.trim());
+                }
 
+        }
+        //System.out.println("selected specialties: " + selectedSpecialties); //debug
+        Doctor doctor = new Doctor (name, surname, pesel, dateOfBirth, phoneNumber,
+                email, id, selectedSpecialties);
+        addDoctor(doctor);
     }
 
-
-
-
-
-
+// FIX ADDING A SPECIALTY TO A DOCTOR - add saving it to the file
     public void interactiveAddSpecialty() {
-        DoctorManager doctorManager = new DoctorManager();
-
-        Doctor doctor = doctorManager.findDoctorById();
-
-        System.out.println("Choose a specialty: ");
-        //System.out.println("1. Cardiologist");
-        //System.out.println("2. Dermatologist");
-        //System.out.println("3. Optometrist");
-        //System.out.println("4. Urologist");
-        //System.out.println("5. Oncologist");
-        for ( String spec : predefinedSpecialties) {
-            System.out.println(predefinedSpecialties.indexOf(spec)+1 + ". " + spec);
+        Doctor doctor = findDoctorById();
+        if (doctor == null) {
+            System.out.println("Doctor not found. Cannot add specialty.");
+            return;
         }
+        System.out.println("Choose a specialty: ");
+        for (int i=0; i<predefinedSpecialties.size(); i++){
+            System.out.println((i+1) + ". " + predefinedSpecialties.get(i));
+        }
+
         int choice = -1;
-
-        while (true){
+        while (choice < 1 || choice > predefinedSpecialties.size()) {
             System.out.println("Enter specialty number: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
 
-            if (choice >= 1 && choice <= doctor.getSpecialties().size()) {
-                break;
-            } else {
-                System.out.println("Invalid choice, please try again");
+                if (choice < 1 || choice > predefinedSpecialties.size()) {
+                    System.out.println("Invalid choice, pick a number between 1 and " + predefinedSpecialties.size());
+                }
+            } catch(InputMismatchException e) {
+                System.out.println("Invalid input, please enter a number: ");
+                scanner.nextLine();
             }
         }
 
-        String selectedSpecialty = predefinedSpecialties.get(choice-1);
+        String selectedSpecialty = predefinedSpecialties.get(choice-1).toUpperCase();
 
         if (doctor.getSpecialties().contains(selectedSpecialty)) {
             System.out.println("This doctor already has this specialty");
-            return;
-        }
-        doctor.addSpecialty(selectedSpecialty);
-        System.out.println("Specialty "+ selectedSpecialty +" added successfully " + "to doctor with ID: "+
-                doctor.getId());
-
+        } else {
+            doctor.addSpecialty(selectedSpecialty);
+            System.out.println("Specialty "+ selectedSpecialty +" added successfully " + "to doctor with ID: "+
+                    doctor.getId());}
+            System.out.println(doctor.getSpecialties());
     }
 }
