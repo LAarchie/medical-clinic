@@ -10,10 +10,11 @@ public class Doctor extends Person {
     private Set<String> specialties;
 
     public Doctor(String name, String surname, String pesel,
-                  LocalDate dateOfBirth, String phoneNumber, String email, String id, Set<String> specialties) {
+                  LocalDate dateOfBirth, String phoneNumber, String email,
+                  String id, Set<String> specialties) {
         super(name, surname, pesel, dateOfBirth, phoneNumber, email);
         this.id = id;
-        this.specialties = new HashSet<>();
+        this.specialties = new HashSet<>(specialties);
     }
 
     public String getId(){
@@ -39,8 +40,8 @@ public class Doctor extends Person {
                 "Age: " + getAge(getDateOfBirth()) + "\n" +
                 "Phone: " + getPhoneNumber() + "\n" +
                 "Email: " + getEmail() + "\n" +
-                "ID: " + id + "\n" +
-                "Specialties: " + specialties +
+                "ID: " + getId() + "\n" +
+                "Specialties: " + getSpecialties() + "\n" +
                 "###########";
     }
 
