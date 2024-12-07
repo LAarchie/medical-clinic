@@ -1,8 +1,9 @@
 package edu.wsb.po;
 
 import java.io.*;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DoctorManager {
@@ -12,6 +13,7 @@ public class DoctorManager {
             "UROLOGIST", "ONCOLOGIST");
     private final String doctorFilePath = getClass().getClassLoader().getResource("doctors.csv").getFile();
     private final Scanner scanner = new Scanner(System.in);
+    private final Map<String, Map<LocalDate, List<LocalTime>>> schedules = new HashMap<>();
 
     public DoctorManager() {
         //Initialize an empty list (for doctors) for each predefined specialty
@@ -49,8 +51,6 @@ public class DoctorManager {
     private void saveDoctorToFile(Doctor doctor) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(doctorFilePath, true))){
             String specialties = String.join(";", doctor.getSpecialties());
-            System.out.println("doc specs: " + doctor.getSpecialties());
-            System.out.println("saving specialties: " + specialties); //debug
             String line = String.join(",",
                     doctor.getName(),
                     doctor.getSurname(),
@@ -88,8 +88,11 @@ public class DoctorManager {
         }
     }
 
-    public void addDoctorToMaps(Doctor doctor){
+    public void addDoctorToMaps(Doctor doctor) {
         doctorsById.put(doctor.getId(), doctor);
+        //for (Map.Entry<String, Doctor> entry : doctorsById.entrySet()) {
+        //    System.out.println("docs by id: " + entry.getKey() + entry.getValue());}
+
 
         Set<String> specialties = doctor.getSpecialties();
         for (String specialty : specialties) {
@@ -98,13 +101,16 @@ public class DoctorManager {
                 doctorsBySpecialty.put(specialty, new ArrayList<>());
             }
             doctorsBySpecialty.get(specialty).add(doctor);
+            //for (Map.Entry<String, List<Doctor>> entry : doctorsBySpecialty.entrySet()) {
+            //    System.out.println("docs by spec: " + entry.getKey() + entry.getValue());}
+
+
         }
 
     }
 
 
     public void addDoctor(Doctor doctor) {
-
         for (String specialty : doctor.getSpecialties()) {
             if(!predefinedSpecialties.contains(specialty)) {
                 System.out.println("Warning! The specialty: " + specialty + " is not recognized");
@@ -112,6 +118,7 @@ public class DoctorManager {
         }
         addDoctorToMaps(doctor);
         saveDoctorToFile(doctor);
+
         System.out.println("Doctor added successfully");
     }
 
@@ -160,9 +167,6 @@ public class DoctorManager {
     }
 
 
-
-
-
     public void interactiveAddDoctor() {
         System.out.print("Enter doctor's name: ");
         String name = scanner.nextLine();
@@ -208,13 +212,13 @@ public class DoctorManager {
                 }
 
         }
-        //System.out.println("selected specialties: " + selectedSpecialties); //debug
         Doctor doctor = new Doctor (name, surname, pesel, dateOfBirth, phoneNumber,
                 email, id, selectedSpecialties);
+        //System.out.println("doctor: " + doctor.toString());
         addDoctor(doctor);
     }
 
-// FIX ADDING A SPECIALTY TO A DOCTOR - add saving it to the file
+
     public void interactiveAddSpecialty() {
         Doctor doctor = findDoctorById();
         if (doctor == null) {
@@ -253,3 +257,4 @@ public class DoctorManager {
             saveAllDoctorsToFile(); //re-write the whole file of Doctors after adding a specialty
     }
 }
+

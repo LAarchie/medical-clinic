@@ -26,7 +26,8 @@ public class MainInterface {
                         humanResourcesInterface.start();
                         break;
                         case 3:
-                            System.out.println("ManagementInterface, stay tuned");
+                            Management managementInterface = new Management();
+                            managementInterface.start();
                             break;
                             case 4:
                                 System.out.println("Exiting...");
