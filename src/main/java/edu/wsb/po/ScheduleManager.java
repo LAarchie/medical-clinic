@@ -14,7 +14,6 @@ public class ScheduleManager {
         loadSchedulesFromFile();
     }
 
-    // Create a schedule for a doctor on a specific date
     public void createScheduleForDoctor(String doctorId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         if (startTime.isBefore(LocalTime.of(8, 0)) || endTime.isAfter(LocalTime.of(20, 0))) {
             System.out.println("Working hours must be between 08:00 and 20:00.");
@@ -26,13 +25,14 @@ public class ScheduleManager {
 
         List<LocalTime> hours = Arrays.asList(startTime, endTime);
         doctorSchedule.put(date, hours);
-        System.out.println("Schedule added for doctor " + doctorId + " on " + date);
+
         saveSchedulesToFile();
     }
 
 
     // Display weekly schedule for a doctor
     public void displayWeeklyScheduleForDoctor(String doctorId) {
+        loadSchedulesFromFile();
         Map<LocalDate, List<LocalTime>> doctorSchedule = schedulesByDoctor.get(doctorId);
         if (doctorSchedule == null || doctorSchedule.isEmpty()) {
             System.out.println("No schedule found for doctor with ID: " + doctorId);
@@ -49,7 +49,7 @@ public class ScheduleManager {
         }
     }
 
-    // Save schedules to CSV file
+
     public void saveSchedulesToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(schedulesFilePath))) {
             for (Map.Entry<String, Map<LocalDate, List<LocalTime>>> doctorEntry : schedulesByDoctor.entrySet()) {
@@ -57,18 +57,17 @@ public class ScheduleManager {
                 for (Map.Entry<LocalDate, List<LocalTime>> scheduleEntry : doctorEntry.getValue().entrySet()) {
                     LocalDate date = scheduleEntry.getKey();
                     List<LocalTime> hours = scheduleEntry.getValue();
-                    System.out.println("Hours schedules: "+hours);
                     writer.write(doctorId + "," + date + "," + hours.get(0) + "," + hours.get(1));
                     writer.newLine();
                 }
             }
-            System.out.println("Schedules saved to file successfully.");
+            //System.out.println("Schedules saved to file successfully.");
         } catch (IOException e) {
             System.err.println("Error saving schedules to file: " + e.getMessage());
         }
     }
 
-    // Load schedules from CSV file
+
     private void loadSchedulesFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(schedulesFilePath))) {
             String line;
@@ -83,7 +82,7 @@ public class ScheduleManager {
 
                 createScheduleForDoctor(doctorId, date, startTime, endTime);
             }
-            System.out.println("Schedules loaded from file.");
+            //System.out.println("Schedules loaded from file.");
         } catch (FileNotFoundException e) {
             System.out.println("Schedule file not found. Starting fresh.");
         } catch (IOException e) {

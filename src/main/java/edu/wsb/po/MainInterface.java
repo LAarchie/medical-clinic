@@ -34,12 +34,6 @@ public class MainInterface {
                                 return;
                                 default:
                                     System.out.println("Invalid choice, try again");
-
-
-
             }
-
-
-
     }
 }}

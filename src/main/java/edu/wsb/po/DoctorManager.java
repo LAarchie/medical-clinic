@@ -3,7 +3,6 @@ package edu.wsb.po;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DoctorManager {
@@ -90,10 +89,6 @@ public class DoctorManager {
 
     public void addDoctorToMaps(Doctor doctor) {
         doctorsById.put(doctor.getId(), doctor);
-        //for (Map.Entry<String, Doctor> entry : doctorsById.entrySet()) {
-        //    System.out.println("docs by id: " + entry.getKey() + entry.getValue());}
-
-
         Set<String> specialties = doctor.getSpecialties();
         for (String specialty : specialties) {
             specialty = specialty.toUpperCase();
@@ -101,14 +96,11 @@ public class DoctorManager {
                 doctorsBySpecialty.put(specialty, new ArrayList<>());
             }
             doctorsBySpecialty.get(specialty).add(doctor);
-            //for (Map.Entry<String, List<Doctor>> entry : doctorsBySpecialty.entrySet()) {
-            //    System.out.println("docs by spec: " + entry.getKey() + entry.getValue());}
 
 
         }
 
     }
-
 
     public void addDoctor(Doctor doctor) {
         for (String specialty : doctor.getSpecialties()) {
@@ -124,6 +116,7 @@ public class DoctorManager {
 
     //Find a doctor by ID
     public Doctor findDoctorById() {
+        loadDoctorFromFile();
         System.out.println("Enter Doctor's ID: ");
         String id = scanner.nextLine();
         if (doctorsById.containsKey(id)) {
@@ -133,8 +126,9 @@ public class DoctorManager {
             return null;
         }
     }
-
+    //Find a list of doctors with the same specialty
     public List<Doctor> findDoctorsBySpecialty() {
+        //loadDoctorFromFile();
         //Display the specialties to the interface
         for (int i=0; i < predefinedSpecialties.size(); i++) {
             System.out.println((i+1) + ". " + predefinedSpecialties.get(i));

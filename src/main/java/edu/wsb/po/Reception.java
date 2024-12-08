@@ -46,7 +46,7 @@ public class Reception {
                                     case 6:
                                         doctor = doctorManager.findDoctorById();
                                         if(doctor==null){
-                                            System.out.println("Doctor not found, returning to the previous menu...");
+                                            System.out.println("Returning to the previous menu...");
                                             return;
                                         }
                                         String doctorId = doctor.getId();

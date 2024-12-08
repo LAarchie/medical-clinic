@@ -42,6 +42,7 @@ public class Management {
 
 
                     scheduleManager.createScheduleForDoctor(doctorId, date, startTime, endTime);
+                    System.out.println("Schedule added for doctor " + doctorId + " on " + date);
                     break;
                     case 2:
                         System.out.println("Exiting...");
