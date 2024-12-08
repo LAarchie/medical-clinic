@@ -30,7 +30,7 @@ public class ScheduleManager {
     }
 
 
-    // Display weekly schedule for a doctor
+    // Display a schedule for a doctor
     public void displayWeeklyScheduleForDoctor(String doctorId) {
         loadSchedulesFromFile();
         Map<LocalDate, List<LocalTime>> doctorSchedule = schedulesByDoctor.get(doctorId);
