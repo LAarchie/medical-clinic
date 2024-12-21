@@ -96,10 +96,7 @@ public class DoctorManager {
                 doctorsBySpecialty.put(specialty, new ArrayList<>());
             }
             doctorsBySpecialty.get(specialty).add(doctor);
-
-
         }
-
     }
 
     public void addDoctor(Doctor doctor) {
@@ -126,6 +123,7 @@ public class DoctorManager {
             return null;
         }
     }
+
     //Find a list of doctors with the same specialty
     public List<Doctor> findDoctorsBySpecialty() {
         //loadDoctorFromFile();

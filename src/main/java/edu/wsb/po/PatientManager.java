@@ -13,6 +13,8 @@ public class PatientManager {
     public PatientManager() {
         loadPatientFromFile();
     }
+
+
     private void loadPatientFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(patientFilePath))) {
             String line;
@@ -33,6 +35,8 @@ public class PatientManager {
             System.out.println("Error loading patient from file" + e.getMessage());
         }
     }
+
+
     public void savePatientToFile(Patient patient) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(patientFilePath, true))){
             String line = String.join(",",
