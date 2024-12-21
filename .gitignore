@@ -2,6 +2,11 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+dependency-reduced-pom.xml
+
+# OS-specific
+.DS_Store
+Thumbs.db
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
