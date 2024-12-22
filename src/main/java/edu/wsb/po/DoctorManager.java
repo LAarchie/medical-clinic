@@ -112,10 +112,9 @@ public class DoctorManager {
     }
 
     //Find a doctor by ID
-    public Doctor findDoctorById() {
+    public Doctor findDoctorById(String id) {
         loadDoctorFromFile();
-        System.out.println("Enter Doctor's ID: ");
-        String id = scanner.nextLine();
+
         if (doctorsById.containsKey(id)) {
             return doctorsById.get(id);
         } else{
@@ -212,7 +211,9 @@ public class DoctorManager {
 
 
     public void interactiveAddSpecialty() {
-        Doctor doctor = findDoctorById();
+        System.out.println("Enter Doctor's ID: ");
+        String id = scanner.nextLine();
+        Doctor doctor = findDoctorById(id);
         if (doctor == null) {
             System.out.println("Doctor not found. Cannot add specialty.");
             return;

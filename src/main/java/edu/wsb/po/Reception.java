@@ -26,6 +26,7 @@ public class Reception {
             scanner.nextLine();
             Doctor doctor = null;
             Patient patient = null;
+            String id = null;
 
             switch (choice) {
                 case 1:
@@ -43,14 +44,18 @@ public class Reception {
                             patientManager.findPatientsBySurname(surname);
                             break;
                             case 4:
-                                doctor = doctorManager.findDoctorById();
+                                System.out.println("Enter Doctor's ID: ");
+                                id = scanner.nextLine();
+                                doctor = doctorManager.findDoctorById(id);
                                 System.out.println(doctor);
                                 break;
                                 case 5:
                                     doctorManager.findDoctorsBySpecialty();
                                     break;
                                     case 6:
-                                        doctor = doctorManager.findDoctorById();
+                                        System.out.println("Enter Doctor's ID: ");
+                                        id = scanner.nextLine();
+                                        doctor = doctorManager.findDoctorById(id);
                                         if(doctor==null){
                                             System.out.println("Returning to the previous menu...");
                                             return;

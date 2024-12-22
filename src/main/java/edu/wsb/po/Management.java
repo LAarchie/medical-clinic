@@ -21,7 +21,9 @@ public class Management {
 
             switch(choice){
                 case 1:
-                    Doctor doctor = doctorManager.findDoctorById(); //Doctor object
+                    System.out.println("Enter Doctor's ID: ");
+                    String id = scanner.nextLine();
+                    Doctor doctor = doctorManager.findDoctorById(id); //Doctor object
                     if(doctor == null){
                         System.out.println("Doctor not found. Returning to the previous menu...");
                         return;
