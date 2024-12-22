@@ -36,7 +36,6 @@ class PatientManagerTest {
 
         assertEquals(patient, patientManager.findPatientByPesel(patient.getPesel()));
         assertEquals(patients, patientManager.findPatientsBySurname(patient.getSurname()));
-
     }
 }
 
