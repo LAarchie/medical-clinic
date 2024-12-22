@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DoctorTest {
     Doctor doctor;
+
     @BeforeEach
     void setUp() {
         LocalDate dateOfBirth = LocalDate.of(1990, 5, 15);
         Set<String> specialties = new HashSet<>();
         doctor = new Doctor("John", "Doe", "12345678901",
-                dateOfBirth, "111222333", "jd@em.com", "jd001", specialties);
+                dateOfBirth, "111222333", "jd@doc.com", "jd001", specialties);
     }
 
     @Test
