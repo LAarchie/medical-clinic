@@ -53,7 +53,7 @@ public class PatientManager {
         }
     }
 
-    private void addPatientToMaps(Patient patient){
+    public void addPatientToMaps(Patient patient){
         patientsByPesel.put(patient.getPesel(), patient);
         String surname = patient.getSurname();
         List<Patient> patientsWithSameSurname = patientsBySurname.get(surname);
@@ -64,6 +64,7 @@ public class PatientManager {
         }
         patientsWithSameSurname.add(patient);
     }
+
     public void addPatient(Patient patient) {
         // Checks if patient with this pesel already exists
         if (patientsByPesel.containsKey(patient.getPesel())) {
@@ -77,37 +78,35 @@ public class PatientManager {
         System.out.println("Patient added successfully");
     }
 
-    public void findPatientByPesel() {
-        System.out.println("Enter PESEL number: ");
-        String pesel = scanner.nextLine();
-
+    public Patient findPatientByPesel(String pesel) {
         //Check if pesel exists in the map
         if (patientsByPesel.containsKey(pesel)) {
-            Patient patient = patientsByPesel.get(pesel);
-            System.out.println(patient.toString());
+            return patientsByPesel.get(pesel);
         } else {
             System.out.println("Invalid PESEL number");
+            return null;
         }
 
     }
 
-    public void findPatientsBySurname() {
-        System.out.println("Enter surname: ");
-        String surname = scanner.nextLine();
+    public List<Patient> findPatientsBySurname(String surname) {
+
 
         //List of patients with the provided surname, if it doesn't match - gives an empty List to avoid an Error
         List<Patient> patientsWithSameSurname = patientsBySurname.getOrDefault(surname, new ArrayList<>());
 
         if (patientsWithSameSurname.isEmpty()){
             System.out.println("No patient found with surname: " + surname);
+            return Collections.emptyList();
         }
         else {
             System.out.println("Patients with surname '" + surname + "':");
 
             //Iterate over the Patients list and print the info of each patient
             for (Patient patient : patientsWithSameSurname) {
-                System.out.println(patient);
+                System.out.println(patient.toString());
             }
+            return patientsWithSameSurname;
         }
     }
 

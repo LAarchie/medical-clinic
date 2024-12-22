@@ -25,16 +25,22 @@ public class Reception {
             int choice = scanner.nextInt(); //Read users choice
             scanner.nextLine();
             Doctor doctor = null;
+            Patient patient = null;
 
             switch (choice) {
                 case 1:
                     patientManager.interactiveAddPatient();
                     break;
                     case 2:
-                        patientManager.findPatientByPesel();
+                        System.out.println("Enter PESEL number: ");
+                        String pesel = scanner.nextLine();
+                        patient = patientManager.findPatientByPesel(pesel);
+                        System.out.println(patient);
                         break;
                         case 3:
-                            patientManager.findPatientsBySurname();
+                            System.out.println("Enter surname: ");
+                            String surname = scanner.nextLine();
+                            patientManager.findPatientsBySurname(surname);
                             break;
                             case 4:
                                 doctor = doctorManager.findDoctorById();
