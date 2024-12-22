@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class ScheduleManager {
-    private final Map<String, Map<LocalDate, List<LocalTime>>> schedulesByDoctor = new HashMap<>();
+    public final Map<String, Map<LocalDate, List<LocalTime>>> schedulesByDoctor = new HashMap<>();
     private final String schedulesFilePath = getClass().getClassLoader().getResource("schedules.csv").getFile();
 
     public ScheduleManager() {

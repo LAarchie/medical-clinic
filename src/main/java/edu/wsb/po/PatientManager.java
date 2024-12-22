@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class PatientManager {
-    private final Map<String, Patient> patientsByPesel = new HashMap<>();
-    private final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
+    public final Map<String, Patient> patientsByPesel = new HashMap<>();
+    public final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
     private final Scanner scanner = new Scanner(System.in);
     private final String patientFilePath = getClass().getClassLoader().getResource("patients.csv").getFile();
 

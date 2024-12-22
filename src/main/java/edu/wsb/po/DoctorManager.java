@@ -6,8 +6,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class DoctorManager {
-    private final Map<String, Doctor> doctorsById = new HashMap<>();
-    private final Map<String, List<Doctor>> doctorsBySpecialty = new HashMap<>();
+    public final Map<String, Doctor> doctorsById = new HashMap<>();
+    public final Map<String, List<Doctor>> doctorsBySpecialty = new HashMap<>();
     private final List<String> predefinedSpecialties = Arrays.asList("CARDIOLOGIST", "DERMATOLOGIST", "OPTOMETRIST",
             "UROLOGIST", "ONCOLOGIST");
     private final String doctorFilePath = getClass().getClassLoader().getResource("doctors.csv").getFile();
