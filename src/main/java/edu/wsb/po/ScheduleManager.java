@@ -1,7 +1,9 @@
 package edu.wsb.po;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -54,7 +56,8 @@ public class ScheduleManager {
 
 
     public void saveSchedulesToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(schedulesFilePath))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(schedulesFilePath,
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             for (Map.Entry<String, Map<LocalDate, List<LocalTime>>> doctorEntry : schedulesByDoctor.entrySet()) {
                 String doctorId = doctorEntry.getKey();
                 for (Map.Entry<LocalDate, List<LocalTime>> scheduleEntry : doctorEntry.getValue().entrySet()) {
@@ -72,7 +75,7 @@ public class ScheduleManager {
 
 
     private void loadSchedulesFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(schedulesFilePath))) {
+        try (BufferedReader reader = Files.newBufferedReader(schedulesFilePath)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
