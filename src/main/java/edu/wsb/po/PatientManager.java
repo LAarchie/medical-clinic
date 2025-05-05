@@ -1,6 +1,9 @@
 package edu.wsb.po;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -8,15 +11,16 @@ public class PatientManager {
     public final Map<String, Patient> patientsByPesel = new HashMap<>();
     public final Map<String, List<Patient>> patientsBySurname = new HashMap<>();
     private final Scanner scanner = new Scanner(System.in);
-    private final String patientFilePath = getClass().getClassLoader().getResource("patients.csv").getFile();
+    private final Path patientFilePath;
 
-    public PatientManager() {
+    public PatientManager(Path filePath) {
+        this.patientFilePath = Objects.requireNonNull(filePath);
         loadPatientFromFile();
     }
 
 
     private void loadPatientFromFile() {
-        try (BufferedReader br = new BufferedReader(new FileReader(patientFilePath))) {
+        try (BufferedReader br = Files.newBufferedReader(patientFilePath)){
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",");
@@ -38,7 +42,8 @@ public class PatientManager {
 
 
     public void savePatientToFile(Patient patient) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(patientFilePath, true))){
+        try (BufferedWriter bw = Files.newBufferedWriter(patientFilePath,
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             String line = String.join(",",
                     patient.getName(),
                     patient.getSurname(),

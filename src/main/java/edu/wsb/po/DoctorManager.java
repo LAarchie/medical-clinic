@@ -1,6 +1,9 @@
 package edu.wsb.po;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -10,11 +13,12 @@ public class DoctorManager {
     public final Map<String, List<Doctor>> doctorsBySpecialty = new HashMap<>();
     private final List<String> predefinedSpecialties = Arrays.asList("CARDIOLOGIST", "DERMATOLOGIST", "OPTOMETRIST",
             "UROLOGIST", "ONCOLOGIST");
-    private final String doctorFilePath = getClass().getClassLoader().getResource("doctors.csv").getFile();
+    private final Path doctorFilePath;
     private final Scanner scanner = new Scanner(System.in);
     private final Map<String, Map<LocalDate, List<LocalTime>>> schedules = new HashMap<>();
 
-    public DoctorManager() {
+    public DoctorManager(Path filePath) {
+        this.doctorFilePath = Objects.requireNonNull(filePath);
         //Initialize an empty list (for doctors) for each predefined specialty
         for (String specialty : predefinedSpecialties) {
             doctorsBySpecialty.put(specialty, new ArrayList<>());
@@ -23,7 +27,7 @@ public class DoctorManager {
     }
 
     private void loadDoctorFromFile() {
-        try (BufferedReader br = new BufferedReader(new FileReader(doctorFilePath))) {
+        try (BufferedReader br = Files.newBufferedReader(doctorFilePath)) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",");
@@ -48,7 +52,8 @@ public class DoctorManager {
     }
 
     private void saveDoctorToFile(Doctor doctor) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(doctorFilePath, true))){
+        try (BufferedWriter bw = Files.newBufferedWriter(doctorFilePath,
+            StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             String specialties = String.join(";", doctor.getSpecialties());
             String line = String.join(",",
                     doctor.getName(),
@@ -67,7 +72,8 @@ public class DoctorManager {
     }
 
     private void saveAllDoctorsToFile() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(doctorFilePath))){
+        try (BufferedWriter bw = Files.newBufferedWriter(doctorFilePath,
+            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)){
             for (Doctor doctor : doctorsById.values()) {
                 String specialties = String.join(";", doctor.getSpecialties());
                 String line = String.join(",",

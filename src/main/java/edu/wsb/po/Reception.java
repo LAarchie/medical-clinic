@@ -3,11 +3,19 @@ package edu.wsb.po;
 import java.util.Scanner;
 
 public class Reception {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final PatientManager patientManager = new PatientManager();
-    private static final DoctorManager doctorManager = new DoctorManager();
-    private static final ScheduleManager scheduleManager = new ScheduleManager();
+    private final Scanner scanner;
+    private final PatientManager patientManager;
+    private final DoctorManager doctorManager;
+    private final ScheduleManager scheduleManager;
 
+
+    public Reception(DoctorManager doctorManager, PatientManager patientManager, ScheduleManager scheduleManager) {
+        this.scanner = new Scanner(System.in);
+        this.patientManager = patientManager;
+        this.doctorManager = doctorManager;
+        this.scheduleManager = scheduleManager;
+        
+    }
     public void start(){
         while (true) {
             // Menu options

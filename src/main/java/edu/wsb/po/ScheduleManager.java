@@ -1,15 +1,18 @@
 package edu.wsb.po;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
 public class ScheduleManager {
     public final Map<String, Map<LocalDate, List<LocalTime>>> schedulesByDoctor = new HashMap<>();
-    private final String schedulesFilePath = getClass().getClassLoader().getResource("schedules.csv").getFile();
+    private final Path schedulesFilePath;
 
-    public ScheduleManager() {
+    public ScheduleManager(Path filePath) {
+        this.schedulesFilePath = Objects.requireNonNull(filePath);
+
         // Initialize the file path using the resource loader
         loadSchedulesFromFile();
     }

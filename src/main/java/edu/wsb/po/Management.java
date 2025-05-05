@@ -5,9 +5,15 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Management {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final ScheduleManager scheduleManager = new ScheduleManager();
-    private static final DoctorManager doctorManager = new DoctorManager();
+    private final Scanner scanner;
+    private final ScheduleManager scheduleManager;
+    private final DoctorManager doctorManager;
+
+    public Management(DoctorManager doctorManager, ScheduleManager scheduleManager) {
+        this.scanner = new Scanner(System.in);
+        this.doctorManager = doctorManager;
+        this.scheduleManager = scheduleManager;
+    }
     public void start(){
         while(true){
             //Menu options

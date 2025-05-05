@@ -3,8 +3,13 @@ package edu.wsb.po;
 import java.util.Scanner;
 
 public class HumanResources {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final DoctorManager doctorManager = new DoctorManager();
+    private final Scanner scanner;
+    private final DoctorManager doctorManager;
+
+    public HumanResources(DoctorManager doctorManager) {
+        this.scanner = new Scanner(System.in);
+        this.doctorManager = doctorManager;
+    }
 
     public void start() {
         while (true) {
