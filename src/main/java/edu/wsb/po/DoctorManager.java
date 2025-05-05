@@ -54,39 +54,32 @@ public class DoctorManager {
     private void saveDoctorToFile(Doctor doctor) {
         try (BufferedWriter bw = Files.newBufferedWriter(doctorFilePath,
             StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
-            String specialties = String.join(";", doctor.getSpecialties());
-            String line = String.join(",",
-                    doctor.getName(),
-                    doctor.getSurname(),
-                    doctor.getPesel(),
-                    doctor.getDateOfBirth().toString(),
-                    doctor.getPhoneNumber(),
-                    doctor.getEmail(),
-                    doctor.getId(),
-                    specialties);
-            bw.write(line);
-            bw.newLine();
+            getDoctorInfoForFile(doctor, bw);
         } catch (IOException e){
             System.out.println("Error saving doctor to file" + e.getMessage());
         }
+    }
+
+    private void getDoctorInfoForFile(Doctor doctor, BufferedWriter bw) throws IOException {
+        String specialties = String.join(";", doctor.getSpecialties());
+        String line = String.join(",",
+                doctor.getName(),
+                doctor.getSurname(),
+                doctor.getPesel(),
+                doctor.getDateOfBirth().toString(),
+                doctor.getPhoneNumber(),
+                doctor.getEmail(),
+                doctor.getId(),
+                specialties);
+        bw.write(line);
+        bw.newLine();
     }
 
     private void saveAllDoctorsToFile() {
         try (BufferedWriter bw = Files.newBufferedWriter(doctorFilePath,
             StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)){
             for (Doctor doctor : doctorsById.values()) {
-                String specialties = String.join(";", doctor.getSpecialties());
-                String line = String.join(",",
-                        doctor.getName(),
-                        doctor.getSurname(),
-                        doctor.getPesel(),
-                        doctor.getDateOfBirth().toString(),
-                        doctor.getPhoneNumber(),
-                        doctor.getEmail(),
-                        doctor.getId(),
-                        specialties);
-                bw.write(line);
-                bw.newLine();
+                getDoctorInfoForFile(doctor, bw);
             }
         } catch (IOException e){
             System.out.println("Error saving doctors to file" + e.getMessage());
