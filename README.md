@@ -3,7 +3,7 @@
 ## System consists of various functionalities for different departments. Written in Java.
 
 The system is built for three separate departments: Reception, Management and Human Resources. Each of those departments
-require different set of functionalities, which will be described below.
+requires a different set of functionalities, which will be described below.
 
 ## Reception
 Reception should be able to:
@@ -23,6 +23,7 @@ Human Resources should be able to:
 Management should be able to:
 * Create a schedule for a doctor for a specified day, with a time frame.
 
+## 
 All the information (patients and doctors profiles and schedules) should be written into corresponding csv files,
 and read from them. 
 
